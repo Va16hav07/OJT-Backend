@@ -3,7 +3,7 @@
 ### 1. User Signup
 
 ```bash
-curl -X POST http://localhost:3000/user/signup \
+curl -X POST https://equiply-jrej.onrender.com/user/signup \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Test User",
@@ -16,7 +16,7 @@ curl -X POST http://localhost:3000/user/signup \
 ### 2. User Signin
 
 ```bash
-curl -X POST http://localhost:3000/user/signin \
+curl -X POST https://equiply-jrej.onrender.com/user/signin \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@example.com",
@@ -27,7 +27,7 @@ curl -X POST http://localhost:3000/user/signin \
 ### 3. Update User
 
 ```bash
-curl -X PATCH http://localhost:3000/user/test@example.com \
+curl -X PATCH https://equiply-jrej.onrender.com/user/test@example.com \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Updated Name",
@@ -38,7 +38,7 @@ curl -X PATCH http://localhost:3000/user/test@example.com \
 ### 4. Delete User
 
 ```bash
-curl -X DELETE http://localhost:3000/user/test@example.com
+curl -X DELETE https://equiply-jrej.onrender.com/user/test@example.com
 ```
 
 ## Product Routes
@@ -46,19 +46,19 @@ curl -X DELETE http://localhost:3000/user/test@example.com
 ### 1. Get All Products
 
 ```bash
-curl -X GET http://localhost:3000/product
+curl -X GET https://equiply-jrej.onrender.com/product
 ```
 
 ### 2. Get Product by ID
 
 ```bash
-curl -X GET http://localhost:3000/product/[PRODUCT_ID]
+curl -X GET https://equiply-jrej.onrender.com/product/[PRODUCT_ID]
 ```
 
 ### 3. Create Product (requires authentication)
 
 ```bash
-curl -X POST http://localhost:3000/product \
+curl -X POST https://equiply-jrej.onrender.com/product \
   -H "Content-Type: application/json" \
   -H "x-access-token: YOUR_JWT_TOKEN" \
   -d '{
@@ -79,7 +79,7 @@ curl -X POST http://localhost:3000/product \
 ### 1. Create a Review (requires authentication)
 
 ```bash
-curl -X POST http://localhost:3000/review \
+curl -X POST https://equiply-jrej.onrender.com/review \
   -H "Content-Type: application/json" \
   -H "x-access-token: YOUR_JWT_TOKEN" \
   -d '{
@@ -92,19 +92,19 @@ curl -X POST http://localhost:3000/review \
 ### 2. Get Reviews for a Product
 
 ```bash
-curl -X GET http://localhost:3000/review/product/PRODUCT_ID_HERE
+curl -X GET https://equiply-jrej.onrender.com/review/product/PRODUCT_ID_HERE
 ```
 
 ### 3. Get Review Statistics for a Product
 
 ```bash
-curl -X GET http://localhost:3000/review/stats/PRODUCT_ID_HERE
+curl -X GET https://equiply-jrej.onrender.com/review/stats/PRODUCT_ID_HERE
 ```
 
 ### 4. Update a Review (requires authentication)
 
 ```bash
-curl -X PUT http://localhost:3000/review/REVIEW_ID_HERE \
+curl -X PUT https://equiply-jrej.onrender.com/review/REVIEW_ID_HERE \
   -H "Content-Type: application/json" \
   -H "x-access-token: YOUR_JWT_TOKEN" \
   -d '{
@@ -116,7 +116,7 @@ curl -X PUT http://localhost:3000/review/REVIEW_ID_HERE \
 ### 5. Delete a Review (requires authentication)
 
 ```bash
-curl -X DELETE http://localhost:3000/review/REVIEW_ID_HERE \
+curl -X DELETE https://equiply-jrej.onrender.com/review/REVIEW_ID_HERE \
   -H "x-access-token: YOUR_JWT_TOKEN"
 ```
 
@@ -125,7 +125,7 @@ curl -X DELETE http://localhost:3000/review/REVIEW_ID_HERE \
 ### 1. Create a New Order (requires authentication)
 
 ```bash
-curl -X POST http://localhost:3000/checkout \
+curl -X POST https://equiply-jrej.onrender.com/checkout \
   -H "Content-Type: application/json" \
   -H "x-access-token: YOUR_JWT_TOKEN" \
   -d '{
@@ -161,21 +161,21 @@ curl -X POST http://localhost:3000/checkout \
 ### 2. Get User Orders (requires authentication)
 
 ```bash
-curl -X GET http://localhost:3000/checkout/my-orders \
+curl -X GET https://equiply-jrej.onrender.com/checkout/my-orders \
   -H "x-access-token: YOUR_JWT_TOKEN"
 ```
 
 ### 3. Get Order by ID (requires authentication)
 
 ```bash
-curl -X GET http://localhost:3000/checkout/ORDER_ID_HERE \
+curl -X GET https://equiply-jrej.onrender.com/checkout/ORDER_ID_HERE \
   -H "x-access-token: YOUR_JWT_TOKEN"
 ```
 
 ### 4. Update Order Status (requires authentication)
 
 ```bash
-curl -X PATCH http://localhost:3000/checkout/ORDER_ID_HERE \
+curl -X PATCH https://equiply-jrej.onrender.com/checkout/ORDER_ID_HERE \
   -H "Content-Type: application/json" \
   -H "x-access-token: YOUR_JWT_TOKEN" \
   -d '{
@@ -188,7 +188,7 @@ curl -X PATCH http://localhost:3000/checkout/ORDER_ID_HERE \
 ### 1. Process a Payment (requires authentication)
 
 ```bash
-curl -X POST http://localhost:3000/payment/process \
+curl -X POST https://equiply-jrej.onrender.com/payment/process \
   -H "Content-Type: application/json" \
   -H "x-access-token: YOUR_JWT_TOKEN" \
   -d '{
@@ -205,19 +205,19 @@ curl -X POST http://localhost:3000/payment/process \
 ### 2. Get Payment Details for an Order (requires authentication)
 
 ```bash
-curl -X GET http://localhost:3000/payment/order/ORDER_ID_HERE \
+curl -X GET https://equiply-jrej.onrender.com/payment/order/ORDER_ID_HERE \
   -H "x-access-token: YOUR_JWT_TOKEN"
 ```
 
 Note: For any protected routes requiring authentication, you'll need to include the JWT token received during login:
 
 ```bash
-curl -X GET http://localhost:3000/protected-route \
+curl -X GET https://equiply-jrej.onrender.com/protected-route \
   -H "x-access-token: YOUR_JWT_TOKEN"
 ```
 
 To test the server connection:
 
 ```bash
-curl http://localhost:3000
+curl https://equiply-jrej.onrender.com
 ```

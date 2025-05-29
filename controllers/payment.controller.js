@@ -83,7 +83,7 @@ const processPayment = async (req, res) => {
             // Create a notification for the user
             await Notification.create({
                 userId: order.userId,
-                message: `Your order with (${order._id}) has been placed successfully!`
+                message: `Your order for "${order.products[0].name}" has been placed successfully!`
             });
             
             return res.status(200).json({

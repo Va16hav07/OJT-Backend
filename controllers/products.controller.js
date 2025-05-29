@@ -1,26 +1,33 @@
 let {validationResult}=require('express-validator')
 const bcrypt=require('bcryptjs')
-let productModel=require("../db/models/seedproduct.js")
+const Product = require("../db/models/seedproduct.js")
 let Review = require("../db/models/review.js")
 
 const jwt=require('jsonwebtoken');
 
 require('dotenv').config();
 
-
 let getAllProducts=async (req,res)=>{
-    let products=await productModel.find()
-    if(!products)
-    {
-        return res.status(404).json({success:false,message:"No products found"})
+    try {
+        let products=await Product.find()
+        if(!products)
+        {
+            return res.status(404).json({success:false,message:"No products found"})
+        }
+        return res.status(200).json({success:true,products:products})
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        return res.status(500).json({
+            success: false,
+            message: "Server error while fetching products"
+        });
     }
-    return res.status(200).json({success:true,products:products})
 }
 
 let product=async (req,res)=>{
     try {
         let id=req.params.id
-        let product=await productModel.findById(id)
+        let product=await Product.findById(id)
         
         if(!product)
         {
@@ -86,7 +93,7 @@ const createProduct = async (req, res) => {
             renting
         } = req.body;
 
-        const newProduct = new productModel({
+        const newProduct = new Product({
             name,
             description,
             price,
@@ -119,11 +126,11 @@ const createProduct = async (req, res) => {
 // Get featured products
 const getFeaturedProducts = async (req, res) => {
     try {
-        const featuredProducts = await productModel.find({ isFeatured: true });
+        const featuredProducts = await Product.find({ isFeatured: true });
         
         if (featuredProducts.length === 0) {
             // If no featured products, return the first 4 products
-            const defaultProducts = await productModel.find().limit(4);
+            const defaultProducts = await Product.find().limit(4);
             return res.status(200).json({
                 success: true,
                 featuredProducts: defaultProducts
@@ -143,9 +150,95 @@ const getFeaturedProducts = async (req, res) => {
     }
 };
 
+// Search products with pagination
+const searchProducts = async (req, res) => {
+    try {
+        const { search, category, page = 1, limit = 10 } = req.query;
+        console.log('Search parameters:', { search, category, page, limit });
+
+        // Build the query
+        const query = {};
+        
+        // Add search term to query if provided
+        if (search && search.trim()) {
+            const searchTerm = search.trim().toLowerCase();
+            
+            // Match products that contain the search term anywhere in the name
+            query.name = { $regex: searchTerm, $options: 'i' };
+        }
+
+        // Add category filter if provided
+        if (category) {
+            const categories = category.split(',');
+            query.category = { $in: categories };
+        }
+
+        // Calculate pagination
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        
+        // Get total count for pagination
+        const totalProducts = await Product.countDocuments(query);
+        const totalPages = Math.ceil(totalProducts / parseInt(limit));
+
+        console.log('MongoDB query:', query);
+        console.log('Pagination:', { skip, limit, totalProducts, totalPages });
+
+        // Execute the query with pagination and sorting
+        const products = await Product.find(query)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit));
+
+        console.log('Found products:', products.length);
+
+        return res.status(200).json({
+            success: true,
+            products,
+            pagination: {
+                currentPage: parseInt(page),
+                totalPages,
+                totalProducts,
+                productsPerPage: parseInt(limit)
+            }
+        });
+    } catch (error) {
+        console.error('Error searching products:', error);
+        return res.status(500).json({
+            success: false,
+            message: "Server error while searching products",
+            error: error.message
+        });
+    }
+};
+
+// Get product by ID
+const getProductById = async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found"
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            product
+        });
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        return res.status(500).json({
+            success: false,
+            message: "Server error while fetching product"
+        });
+    }
+};
+
 module.exports={
     getAllProducts,
     product,
     createProduct,
-    getFeaturedProducts
+    getFeaturedProducts,
+    searchProducts,
+    getProductById
 }
