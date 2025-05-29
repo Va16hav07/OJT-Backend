@@ -314,6 +314,26 @@ const setFeaturedProducts = async (req, res) => {
     }
 };
 
+// Verify admin status
+const verifyAdmin = async (req, res) => {
+    try {
+        // If the request made it this far, the user is authenticated and is an admin
+        // (thanks to the auth and isAdmin middleware)
+        return res.status(200).json({
+            success: true,
+            message: "Admin verification successful",
+            isAdmin: true
+        });
+    } catch (error) {
+        console.error('Error verifying admin:', error);
+        return res.status(500).json({
+            success: false,
+            message: "Server error during admin verification",
+            clearAuth: true
+        });
+    }
+};
+
 module.exports = {
     getDashboardStats,
     getAllUsers,
@@ -324,5 +344,6 @@ module.exports = {
     getAllOrders,
     updateOrderStatus,
     getFeaturedProducts,
-    setFeaturedProducts
+    setFeaturedProducts,
+    verifyAdmin
 };

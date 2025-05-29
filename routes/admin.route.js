@@ -12,10 +12,14 @@ const {
     getAllOrders,
     updateOrderStatus,
     getFeaturedProducts,
-    setFeaturedProducts
+    setFeaturedProducts,
+    verifyAdmin
 } = require('../controllers/admin.controller.js');
 
 const adminRouter = express.Router();
+
+// Admin verification route - Check if user is still admin
+adminRouter.get('/verify', auth, isAdmin, verifyAdmin);
 
 // All routes require authentication and admin privileges
 adminRouter.use(auth);
