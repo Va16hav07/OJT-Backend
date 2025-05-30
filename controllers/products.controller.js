@@ -9,9 +9,15 @@ require('dotenv').config();
 
 let getAllProducts=async (req,res)=>{
     try {
-        let products=await Product.find()
-        if(!products)
-        {
+        const { city } = req.query;
+        let query = {};
+        
+        if (city && city !== "All Cities") {
+            query.location = { $regex: new RegExp(city, 'i') };
+        }
+        
+        let products = await Product.find(query);
+        if(!products || products.length === 0) {
             return res.status(404).json({success:false,message:"No products found"})
         }
         return res.status(200).json({success:true,products:products})
@@ -126,11 +132,19 @@ const createProduct = async (req, res) => {
 // Get featured products
 const getFeaturedProducts = async (req, res) => {
     try {
-        const featuredProducts = await Product.find({ isFeatured: true });
+        const { city } = req.query;
+        let query = { isFeatured: true };
+        
+        if (city && city !== "All Cities") {
+            query.location = { $regex: new RegExp(city, 'i') };
+        }
+        
+        const featuredProducts = await Product.find(query);
         
         if (featuredProducts.length === 0) {
-            // If no featured products, return the first 4 products
-            const defaultProducts = await Product.find().limit(4);
+            // If no featured products, return the first 4 products from the city
+            const defaultProducts = await Product.find(city && city !== "All Cities" ? { location: { $regex: new RegExp(city, 'i') } } : {})
+                .limit(4);
             return res.status(200).json({
                 success: true,
                 featuredProducts: defaultProducts
@@ -153,8 +167,8 @@ const getFeaturedProducts = async (req, res) => {
 // Search products with pagination
 const searchProducts = async (req, res) => {
     try {
-        const { search, category, page = 1, limit = 10 } = req.query;
-        console.log('Search parameters:', { search, category, page, limit });
+        const { search, category, page = 1, limit = 10, city } = req.query;
+        console.log('Search parameters:', { search, category, page, limit, city });
 
         // Build the query
         const query = {};
@@ -171,6 +185,11 @@ const searchProducts = async (req, res) => {
         if (category) {
             const categories = category.split(',');
             query.category = { $in: categories };
+        }
+
+        // Add city filter if provided
+        if (city && city !== "All Cities") {
+            query.location = { $regex: new RegExp(city, 'i') };
         }
 
         // Calculate pagination
