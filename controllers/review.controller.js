@@ -238,6 +238,7 @@ const updateReview = async (req, res) => {
         // Update the review
         if (rating) review.rating = rating;
         if (comment) review.comment = comment;
+        review.updatedAt = Date.now(); // Add timestamp for the update
 
         await review.save();
 
